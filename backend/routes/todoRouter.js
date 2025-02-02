@@ -1,9 +1,9 @@
 const express = require("express");
-const { login, register } = require("../controllers/todoController");
-
 const router = express.Router();
+const taskController = require("../controllers/taskController");
+const authMiddleware = require("../middleware/authMiddleware");
 
-router.post("/login", login);
-router.post("/register", register);
-
-module.exports = router;
+router.post("/", authMiddleware, taskController.createTask);
+router.get("/", authMiddleware, taskController.getTasks);
+router.put("/:id", authMiddleware, taskController.updateTask);
+router.delete("/:id", authMiddleware, taskController.deleteTask);
