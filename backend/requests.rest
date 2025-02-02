@@ -2,21 +2,27 @@ GET http://localhost:3000/posts
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieWFzc2VyIiwiaWF0IjoxNzM4NTA0MjEyfQ.cNOL274Zf3AsJcew6tDHb21sJ-JwT6HNiMoX8GQNreE
 ###
 
-POST http://localhost:4000/login
+POST http://localhost:3000/register
+Content-Type: application/json 
 
+{
+    "email":"omarsoubky0801@gmail.com",
+    "name":"omar soubky",
+    "password":"5678",
+    "phone":"123456789"
+}
+
+###
+POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Mzg1MjU1NzN9.KwFwgWCh8R6aRsKhLtrzpzuYR5eOvy-e3mfIk4dSVEc"
+    "email":"omarsoubky0801@gmail.com",
+     "password":"5678"
+
+
 }
 
 ###
 
-POST http://localhost:4000/login
-Content-Type: application/json
-
-{
-    "username":"yasser"
-
-    
-}
+GET http://localhost:3000/user

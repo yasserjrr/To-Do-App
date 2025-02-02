@@ -1,28 +1,29 @@
 require("dotenv").config();
-
 const express = require("express");
+const mongoose = require("mongoose");
+const userRouter = require("./routes/userRouter");
+const cors = require("cors");
+
 const app = express();
-
-const jwt = require("jsonwebtoken");
-
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
+
+mongoose
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-const posts = [
-  {
-    username: "yasser",
-    title: "post 1",
-  },
-  {
-    username: "mohamady",
-    title: "post 2",
-  },
-];
+app.get("/user", async (req, res) => {
+  const user = await User.find();
+  res.json(user);
+});
 
 app.get("/posts", authenticateToken, (req, res) => {
   res.json(posts.filter((post) => post.username === req.user.name));
@@ -40,3 +41,5 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
+app.use(userRouter);

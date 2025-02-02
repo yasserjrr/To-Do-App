@@ -1,12 +1,12 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
-import { TodoList } from './pages/TodoList';
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { TodoList } from "./pages/TodoList";
 
 function App() {
   // TODO: Add authentication check
-  const isAuthenticated = false;
+  const isAuthenticated = !!sessionStorage.getItem("accessToken");
 
   return (
     <BrowserRouter>
@@ -14,11 +14,7 @@ function App() {
         <Route
           path="/"
           element={
-            isAuthenticated ? (
-              <TodoList />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            isAuthenticated ? <TodoList /> : <Navigate to="/login" replace />
           }
         />
         <Route path="/login" element={<Login />} />

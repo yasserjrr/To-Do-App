@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { AuthLayout } from '../components/AuthLayout';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { AuthLayout } from "../components/AuthLayout";
+import axios from "axios";
 
 interface FormData {
   email: string;
@@ -9,26 +10,41 @@ interface FormData {
 
 export function Login() {
   const [formData, setFormData] = useState<FormData>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    axios
+      .post("http://localhost:3000/login", {
+        email: formData.email,
+        password: formData.password,
+      })
+      .then((response) => {
+        sessionStorage.setItem("accessToken", response.data.accessToken);
+        sessionStorage.setItem("refreshToken", response.data.refreshToken);
+        window.location.href = "/";
+      })
+      .catch((e) => console.log("e", e));
     // TODO: Handle login logic
-    console.log('Login data:', formData);
+    console.log("Login data:", formData);
   };
 
   return (
     <AuthLayout title="Sign in to your account">
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email address
           </label>
           <div className="mt-1">
@@ -46,7 +62,10 @@ export function Login() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <div className="mt-1">
@@ -73,8 +92,11 @@ export function Login() {
         </div>
 
         <div className="text-sm text-center">
-          Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
             Register
           </Link>
         </div>

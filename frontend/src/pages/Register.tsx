@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { AuthLayout } from '../components/AuthLayout';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { AuthLayout } from "../components/AuthLayout";
+import axios from "axios";
+
 
 interface FormData {
   name: string;
@@ -12,37 +14,56 @@ interface FormData {
 
 export function Register() {
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setError('');
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError("");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
+    axios
+      .post("http://localhost:3000/register", {
+        email: formData.email,
+        name: formData.name,
+        phone: formData.phone,
+        password: formData.password,
+      })
+      .then((response) => {
+        sessionStorage.setItem("accessToken", response.data.accessToken);
+        sessionStorage.setItem("refreshToken", response.data.refreshToken);
+        window.location.href = "/";
+      })
+      .catch((e) => setError(e.message));
+
+      
+
     // TODO: Handle registration logic
-    console.log('Registration data:', formData);
+    console.log("Registration data:", formData);
   };
 
   return (
     <AuthLayout title="Create your account">
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
             Full Name
           </label>
           <div className="mt-1">
@@ -59,7 +80,10 @@ export function Register() {
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email address
           </label>
           <div className="mt-1">
@@ -77,7 +101,10 @@ export function Register() {
         </div>
 
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-gray-700"
+          >
             Phone Number
           </label>
           <div className="mt-1">
@@ -94,7 +121,10 @@ export function Register() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <div className="mt-1">
@@ -111,7 +141,10 @@ export function Register() {
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="confirmPassword"
+            className="block text-sm font-medium text-gray-700"
+          >
             Confirm Password
           </label>
           <div className="mt-1">
@@ -127,9 +160,7 @@ export function Register() {
           </div>
         </div>
 
-        {error && (
-          <div className="text-red-600 text-sm">{error}</div>
-        )}
+        {error && <div className="text-red-600 text-sm">{error}</div>}
 
         <div>
           <button
@@ -141,8 +172,11 @@ export function Register() {
         </div>
 
         <div className="text-sm text-center">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
             Sign in
           </Link>
         </div>
